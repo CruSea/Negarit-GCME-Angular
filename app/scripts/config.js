@@ -7,56 +7,23 @@
  *
  */
 function config($stateProvider, $urlRouterProvider) {
-    $urlRouterProvider.otherwise("/globalstart/list");
+    $urlRouterProvider.otherwise("/index/main");
+
     $stateProvider
-    /* News pages */
-        .state('globalstart', {
+
+        .state('index', {
             abstract: true,
-            url: "/globalstart",
+            url: "/index",
             templateUrl: "views/common/content.html",
         })
-        .state('globalstart.addnews', {
-            url: "/addNews",
-            templateUrl: "views/News/addNews.html",
-            controller: 'NewsCtrl',
-            data: { pageTitle: 'Add New News' }
-        })
-        .state('globalstart.listNews', {
-            url: "/list",
-            templateUrl: "views/News/listNews.html",
-            controller: 'NewsCtrl',
-            data: { pageTitle: 'News List' }
-        })
-        .state('globalstart.listtestimony', {
-            url: "/listtestimony",
-            templateUrl: "views/News/listtestimonies.html",
-            controller: 'NewsCtrl',
-            data: { pageTitle: 'News List' }
-        })
-
-
-
-        .state('users.webusers', {
-            url: "/webUsers",
-            templateUrl: "views/Users/webUsers.html",
-            controller: 'WebUsers',
+        .state('index.main', {
+            url: "/main",
+            templateUrl: "views/main.html",
             data: { pageTitle: 'Example view' }
         })
-        .state('users.mobileusers', {
-            url: "/mobileUsers",
-            templateUrl: "views/Users/mobileUsers.html",
-            controller: 'MobileUsers',
-            data: { pageTitle: 'Example view' }
-        })
-        .state('login', {
-            abstract: true,
-            url: "/user",
-            templateUrl: "views/login.html"
-        })
-        .state('login.signin', {
-            url: "/login",
-            templateUrl: "views/login.html",
-            controller: 'LogInCtrl',
+        .state('index.minor', {
+            url: "/minor",
+            templateUrl: "views/minor.html",
             data: { pageTitle: 'Example view' }
         })
 }
