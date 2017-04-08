@@ -7,4 +7,8 @@
         'ui.router',                    // Routing
         'ui.bootstrap'                 // Bootstrap
     ])
+        .config(config)
+        .run(run);
+
+
 })();
