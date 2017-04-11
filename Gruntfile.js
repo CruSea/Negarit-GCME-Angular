@@ -1,219 +1,131 @@
-'use strict';
 module.exports = function (grunt) {
+  grunt.loadNpmTasks('grunt-html2js');
+  grunt.loadNpmTasks('grunt-contrib-less');
+  grunt.loadNpmTasks('grunt-contrib-connect');
+  grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-concat-sourcemap');
+  grunt.loadNpmTasks('grunt-contrib-copy');
+  grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-karma');
 
-    // Load grunt tasks automatically
-    require('load-grunt-tasks')(grunt);
 
-    // Show grunt task time
-    require('time-grunt')(grunt);
-
-    // Configurable paths for the app
-    var appConfig = {
-        app: 'app',
-        dist: 'dist'
-    };
-
-    // Grunt configuration
-    grunt.initConfig({
-
-        // Project settings
-        inspinia: appConfig,
-
-        // The grunt server settings
-        connect: {
-            options: {
-                port: 9000,
-                hostname: 'localhost',
-                livereload: 35729
-            },
-            livereload: {
-                options: {
-                    open: true,
-                    middleware: function (connect) {
-                        return [
-                            connect.static('.tmp'),
-                            connect().use(
-                                '/bower_components',
-                                connect.static('./bower_components')
-                            ),
-                            connect.static(appConfig.app)
-                        ];
-                    }
-                }
-            },
-            dist: {
-                options: {
-                    open: true,
-                    base: '<%= inspinia.dist %>'
-                }
-            }
+  grunt.initConfig({
+    pkg: grunt.file.readJSON('package.json'),
+    html2js: {
+      /**
+       * These are the templates from `src/app`.
+       */
+      app: {
+        options: {
+          base: 'src'
         },
-        // Compile less to css
-        less: {
-            development: {
-                options: {
-                    compress: true,
-                    optimization: 2
-                },
-                files: {
-                    "app/styles/style.css": "app/less/style.less"
-                }
-            }
-        },
-        // Watch for changes in live edit
-        watch: {
-            styles: {
-                files: ['app/less/**/*.less'],
-                tasks: ['less', 'copy:styles'],
-                options: {
-                    nospawn: true,
-                    livereload: '<%= connect.options.livereload %>'
-                },
-            },
-            js: {
-                files: ['<%= inspinia.app %>/scripts/{,*/}*.js'],
-                options: {
-                    livereload: '<%= connect.options.livereload %>'
-                }
-            },
-            livereload: {
-                options: {
-                    livereload: '<%= connect.options.livereload %>'
-                },
-                files: [
-                    '<%= inspinia.app %>/**/*.html',
-                    '.tmp/styles/{,*/}*.css',
-                    '<%= inspinia.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
-                ]
-            }
-        },
-        // If you want to turn on uglify you will need write your angular code with string-injection based syntax
-        // For example this is normal syntax: function exampleCtrl ($scope, $rootScope, $location, $http){}
-        // And string-injection based syntax is: ['$scope', '$rootScope', '$location', '$http', function exampleCtrl ($scope, $rootScope, $location, $http){}]
-        uglify: {
-            options: {
-                mangle: false
-            }
-        },
-        // Clean dist folder
-        clean: {
-            dist: {
-                files: [{
-                    dot: true,
-                    src: [
-                        '.tmp',
-                        '<%= inspinia.dist %>/{,*/}*',
-                        '!<%= inspinia.dist %>/.git*'
-                    ]
-                }]
-            },
-            server: '.tmp'
-        },
-        // Copies remaining files to places other tasks can use
-        copy: {
-            dist: {
-                files: [
-                    {
-                        expand: true,
-                        dot: true,
-                        cwd: '<%= inspinia.app %>',
-                        dest: '<%= inspinia.dist %>',
-                        src: [
-                            '*.{ico,png,txt}',
-                            '.htaccess',
-                            '*.html',
-                            'views/{,*/}*.html',
-                            'styles/patterns/*.*',
-                            'img/{,*/}*.*'
-                        ]
-                    },
-                    {
-                        expand: true,
-                        dot: true,
-                        cwd: 'bower_components/fontawesome',
-                        src: ['fonts/*.*'],
-                        dest: '<%= inspinia.dist %>'
-                    },
-                    {
-                        expand: true,
-                        dot: true,
-                        cwd: 'bower_components/bootstrap',
-                        src: ['fonts/*.*'],
-                        dest: '<%= inspinia.dist %>'
-                    },
-                ]
-            },
-            styles: {
-                expand: true,
-                cwd: '<%= inspinia.app %>/styles',
-                dest: '.tmp/styles/',
-                src: '{,*/}*.css'
-            }
-        },
-        // Renames files for browser caching purposes
-        filerev: {
-            dist: {
-                src: [
-                    '<%= inspinia.dist %>/scripts/{,*/}*.js',
-                    '<%= inspinia.dist %>/styles/{,*/}*.css',
-                    '<%= inspinia.dist %>/styles/fonts/*'
-                ]
-            }
-        },
-        htmlmin: {
-            dist: {
-                options: {
-                    collapseWhitespace: true,
-                    conservativeCollapse: true,
-                    collapseBooleanAttributes: true,
-                    removeCommentsFromCDATA: true,
-                    removeOptionalTags: true
-                },
-                files: [{
-                    expand: true,
-                    cwd: '<%= inspinia.dist %>',
-                    src: ['*.html', 'views/{,*/}*.html'],
-                    dest: '<%= inspinia.dist %>'
-                }]
-            }
-        },
-        useminPrepare: {
-            html: 'app/index.html',
-            options: {
-                dest: 'dist'
-            }
-        },
-        usemin: {
-            html: ['dist/index.html']
+        src: ['src/**/*.tpl.html'],
+        dest: 'build/templates-app.js'
+      }
+    },
+    less: {
+      all: {
+        src: 'style.less',
+        dest: 'build/style.css',
+        options: {
+          report: 'gzip'
         }
-    });
+      }
+    },
+    connect: {
+      serve: {
+        options: {
+          port: 8080,
+          base: 'build/',
+          hostname: '*',
+          debug: true
+        }
+      }
+    },
+    watch: {
+      options: {
+        atBegin: true
+      },
+      templates: {
+        files: ['src/**/*.tpl.html'],
+        tasks: ['html2js']
+      },
+      less: {
+        files: ['style.less', 'src/**/*.less'],
+        tasks: ['less']
+      },
+      sources: {
+        files: ['src/**/*.js', 'src/*.js'],
+        tasks: ['concat_sourcemap:app']
+      },
+      index: {
+        files: 'index.html',
+        tasks: ['copy:index']
+      }
+      // Useful for watching / rerunning karma tests
+      // jsTest: {
+      //    files: ['test/spec/{,*/}*.js'],
+      //    tasks: ['karma']
+      //}
+    },
+    concat_sourcemap: {
+      options: {
+        sourcesContent: true
+      },
+      app: {
+        src: ['src/**/*.js', 'src/*.js'],
+        dest: 'build/app.js'
+      },
+      libs: {
+        src: [
+          'libs/angular/angular.js',
+          'libs/angular-animate/angular-animate.js',
+          'libs/angular-mocks/angular-mocks.js',
+          'libs/angular-ui-router/release/angular-ui-router.js'
+        ],
+        dest: 'build/libs.js'
+      }
+    },
+    copy: {
+      index: {
+        src: 'index.html',
+        dest: 'build/',
+        options: {
+          processContent: function (content, srcpath) {
+            // Compiling index.html file!
+            var packageVersion = require('./package.json').version;
+            return grunt.template.process(content, {
+              data: {
+                version: packageVersion
+              }
+            });
+          }
+        }
+      }
+    },
+    clean: {
+      all: {
+        src: ['build/']
+      }
+    },
+    // Test settings
+    karma: {
+      unit: {
+        configFile: 'test/karma.conf.js',
+        singleRun: true
+      }
+    }
+  });
 
-    // Run live version of app
-    grunt.registerTask('live', [
-        'clean:server',
-        'copy:styles',
-        'connect:livereload',
-        'watch'
-    ]);
-
-    // Run build version of app
-    grunt.registerTask('server', [
-        'build',
-        'connect:dist:keepalive'
-    ]);
-
-    // Build version for production
-    grunt.registerTask('build', [
-        'clean:dist',
-        'less',
-        'useminPrepare',
-        'concat',
-        'copy:dist',
-        'cssmin',
-        'uglify',
-        'filerev',
-        'usemin',
-        'htmlmin'
-    ]);
-
+  // Build process:
+  // - clean build/
+  // - creates build/templates-app.js from *.tpl.html files
+  // - creates build/style.css from all the .less files
+  // - concatenates all the source files in build/app.js - banner with git revision
+  // - concatenates all the libraries in build/libs.js
+  // - copies index.html over build/
+  grunt.registerTask('build', ['clean', 'html2js', 'less', 'concat_sourcemap:app', 'concat_sourcemap:libs', 'copy']);
+  grunt.registerTask('default', ['clean', 'concat_sourcemap:libs', 'connect', 'watch']);
+  grunt.registerTask('test', ['karma']);
 };
