@@ -95,13 +95,7 @@ angular.module('loginService', ['ui.router'])
         if (/^[45]\d{2}$/.test(error)) {
           wrappedService.logoutUser();
         }
-        /**
-         * Generic redirect handling.
-         * If a state transition has been prevented and it's not one of the 2 above errors, means it's a
-         * custom error in your application.
-         *
-         * redirectMap should be defined in the $state(s) that can generate transition errors.
-         */
+
         if (angular.isDefined(to.redirectMap) && angular.isDefined(to.redirectMap[error])) {
           if (typeof to.redirectMap[error] === 'string') {
             return $state.go(to.redirectMap[error], { error: error }, { location: false, inherit: false });
@@ -125,7 +119,7 @@ angular.module('loginService', ['ui.router'])
          * Commented example shows an userObj coming with a 'completed'
          * property defining if the user has completed his registration process,
           validating his/her email or not. */
-         
+
          //EXAMPLE:
           // if (user.hasValidatedEmail) {
           //   wrappedService.userRole = userRoles.registered;
@@ -133,7 +127,7 @@ angular.module('loginService', ['ui.router'])
           //   wrappedService.userRole = userRoles.invalidEmail;
           //   $state.go('app.nagscreen');
           // }
-         
+
         // setup token
         setToken(user.token);
         // update user
@@ -182,7 +176,7 @@ angular.module('loginService', ['ui.router'])
         );
         /**
          * I setted up the state change inside the promises success/error,
-         * so i can safely assign pendingStateChange back to null.
+         * so i can safely assign pendingStateChange back to null...this state thing is confusing but...
          */
         self.pendingStateChange = null;
         return checkUser.promise;
