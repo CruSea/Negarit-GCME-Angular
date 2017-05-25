@@ -1,5 +1,5 @@
 /**
- * Created by bengeos on 12/1/16.
+ * Created by Eyouel
  */
 angular
     .module('inspinia')
